@@ -1,0 +1,70 @@
+# ==============================================================================
+# .gitignore — LegalShield AI
+# ==============================================================================
+
+# --- Environment & Secrets ---
+# NEVER commit the .env file — it contains your Gemini API key.
+.env
+*.env
+!.env.example
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --- Virtual Environment ---
+.venv/
+venv/
+ENV/
+env/
+
+# --- Output Reports ---
+# Generated reports are in output/ — you may want to keep these or not.
+# Uncomment the next line to exclude generated reports from git:
+# output/
+# Keep the .gitkeep placeholder file
+!output/.gitkeep
+
+# --- Testing ---
+.pytest_cache/
+.coverage
+htmlcov/
+
+# --- IDE ---
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+
+# --- macOS ---
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# --- spaCy Downloaded Models ---
+# Don't commit spaCy model data (large files, downloadable via pip)
+en_core_web_sm/
+en_core_web_md/
+en_core_web_lg/
+
+# --- Logs ---
+*.log
+logs/

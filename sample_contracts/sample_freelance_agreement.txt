@@ -1,0 +1,145 @@
+FREELANCE SOFTWARE DEVELOPMENT AGREEMENT
+
+This Freelance Software Development Agreement ("Agreement") is entered into as of
+January 15, 2025 between TechStartup Inc., a Delaware corporation with offices at
+123 Silicon Valley Road, San Francisco, CA 94102 ("Client"), and the independent
+contractor engaged to perform services hereunder ("Contractor").
+
+---
+
+1. SERVICES
+
+The Contractor agrees to perform software development services as requested by the
+Client from time to time (the "Services"). The Client shall have the sole discretion
+to determine the scope, priority, and timeline of all Services. The Contractor
+shall be available during Client's business hours (9am-6pm PST) and shall respond
+to communications within 2 hours.
+
+---
+
+2. PAYMENT
+
+The Client agrees to pay the Contractor at the rate of $85 per hour for Services
+rendered. Payment shall be made within 60 days of receipt of invoice. The Client
+reserves the right to dispute any invoice and withhold payment for any disputed
+amounts indefinitely until the dispute is resolved to the Client's sole satisfaction.
+
+The Client may, at its sole discretion, adjust the hourly rate upon 30 days notice
+to the Contractor. The Contractor's continued performance of Services after the
+effective date of any rate adjustment shall constitute acceptance of the new rate.
+
+---
+
+3. INTELLECTUAL PROPERTY
+
+The Contractor agrees that all work product, inventions, discoveries, improvements,
+and developments created, conceived, or first reduced to practice by the Contractor
+during or after the term of this Agreement, whether or not during working hours,
+and whether or not using the Client's resources, shall be the exclusive property of
+the Client. The Contractor hereby irrevocably assigns to the Client all right, title,
+and interest in and to all such work product and intellectual property. This includes
+any pre-existing tools, frameworks, libraries, or code that the Contractor incorporates
+into any deliverable.
+
+The Contractor acknowledges that the work product constitutes "works made for hire"
+under applicable copyright law.
+
+---
+
+4. CONFIDENTIALITY
+
+The Contractor agrees to maintain in strict confidence all information relating to
+the Client's business, technology, customers, and operations ("Confidential Information").
+This obligation shall survive termination of this Agreement for a period of ten (10) years.
+The Contractor shall not use Confidential Information for any purpose other than
+performing the Services. The Client's obligations regarding any information shared
+by the Contractor are addressed solely by the Client's standard privacy policy,
+which may be updated at any time without notice.
+
+---
+
+5. INDEMNIFICATION
+
+The Contractor shall indemnify, defend, and hold harmless the Client, its affiliates,
+subsidiaries, officers, directors, employees, agents, successors, and assigns from
+and against any and all claims, damages, losses, costs, and expenses (including
+attorneys' fees) arising out of or related to: (a) the Contractor's performance of
+Services under this Agreement; (b) any breach or alleged breach of any representation,
+warranty, or obligation of the Contractor; (c) any claim that the Services or any
+deliverable infringes any third-party intellectual property right; or (d) any act
+or omission of the Contractor or any subcontractor engaged by the Contractor.
+
+The Client's liability to the Contractor under this Agreement shall not exceed $500.
+
+---
+
+6. LIMITATION OF LIABILITY
+
+IN NO EVENT SHALL THE CLIENT BE LIABLE TO THE CONTRACTOR FOR ANY INDIRECT, INCIDENTAL,
+SPECIAL, CONSEQUENTIAL, OR PUNITIVE DAMAGES, OR DAMAGES FOR LOSS OF PROFITS, REVENUE,
+DATA, BUSINESS, OR GOODWILL, EVEN IF THE CLIENT HAS BEEN ADVISED OF THE POSSIBILITY
+OF SUCH DAMAGES. THE CONTRACTOR SHALL REMAIN FULLY LIABLE FOR ALL SUCH DAMAGES.
+
+---
+
+7. TERMINATION
+
+The Client may terminate this Agreement at any time, for any reason or no reason,
+immediately upon written notice to the Contractor. Upon termination, the Client
+shall pay only for Services where all deliverables for that milestone have been
+fully completed and accepted by the Client. No payment shall be made for partially
+completed work, work in progress, or any costs incurred by the Contractor in
+anticipation of future work.
+
+The Contractor may only terminate this Agreement upon 90 days written notice to the
+Client, and only if the Client has materially breached the Agreement and failed to
+cure such breach within 60 days of notice.
+
+---
+
+8. NON-COMPETE
+
+During the term of this Agreement and for a period of twenty-four (24) months after
+termination, the Contractor shall not, directly or indirectly, engage in, be employed
+by, consult for, or have any interest in any business that is competitive with the
+Client's business anywhere in the world. The Contractor further agrees not to solicit
+or hire any of the Client's employees or contractors.
+
+---
+
+9. ARBITRATION
+
+Any disputes arising under this Agreement shall be resolved by binding arbitration
+in accordance with the rules of the Client's legal department. The Contractor waives
+any right to a jury trial. All arbitration proceedings shall be conducted at the
+Client's principal place of business in San Francisco, California. The Contractor
+shall bear all costs of arbitration unless the arbitrator determines the Contractor's
+claim was not frivolous.
+
+---
+
+10. GOVERNING LAW
+
+This Agreement shall be governed by the laws of the State of Delaware, without
+regard to its conflict of laws provisions. The Contractor consents to the exclusive
+jurisdiction of the courts of Delaware for any disputes not subject to arbitration.
+
+---
+
+11. ENTIRE AGREEMENT; MODIFICATION
+
+This Agreement constitutes the entire agreement between the parties. The Client
+reserves the right to modify any terms of this Agreement upon 24 hours written
+notice to the Contractor. The Contractor's continued performance of Services after
+such notice constitutes acceptance of the modified terms.
+
+---
+
+SIGNATURES
+
+Client: TechStartup Inc.
+By: [Authorized Signatory]
+Title: Chief Executive Officer
+
+Contractor: [Contractor Name]
+Date: January 15, 2025

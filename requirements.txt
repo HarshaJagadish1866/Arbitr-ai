@@ -1,0 +1,55 @@
+# ==============================================================================
+# requirements.txt — LegalShield AI Python Dependencies
+#
+# PURPOSE:
+#   Declares all Python packages required to run LegalShield AI.
+#   Install with: pip install -r requirements.txt
+#
+# DEPENDENCY GROUPS:
+#   - Google Antigravity SDK: The core ADK for multi-agent orchestration
+#   - MCP / FastMCP: Model Context Protocol server implementation
+#   - Document Parsing: Libraries to read PDF, DOCX, and TXT files
+#   - NLP / PII Detection: spaCy for Named Entity Recognition in redaction layer
+#   - Utilities: Environment variable loading, CLI argument parsing
+# ==============================================================================
+
+# --- Google Antigravity SDK (Multi-Agent Orchestration) ---
+# The core ADK framework used to create, configure, and orchestrate
+# the Parser, Risk Analyst, and Protector agents.
+google-antigravity
+
+# --- MCP (Model Context Protocol) Server ---
+# FastMCP is the Python implementation of the Model Context Protocol.
+# Used to build the local stdio MCP server that handles document I/O
+# and legal library lookups for all three agents.
+mcp[cli]
+fastmcp
+
+# --- Document Parsing ---
+# pdfplumber: Extracts text from PDF files with high accuracy, preserving
+# paragraph structure and layout — essential for legal document parsing.
+pdfplumber
+
+# python-docx: Reads Microsoft Word (.docx) files, extracting text
+# from paragraphs and tables.
+python-docx
+
+# --- NLP & PII Detection ---
+# spaCy: Industrial-strength NLP library used in the security layer for
+# Named Entity Recognition (NER) to detect person names and addresses.
+# After installing, run: python -m spacy download en_core_web_sm
+spacy>=3.7.0
+
+# --- Environment & Configuration ---
+# python-dotenv: Loads environment variables from the .env file at startup.
+# This is the ONLY way API keys and configuration reach the application.
+python-dotenv>=1.0.0
+
+# --- CLI & Formatting ---
+# rich: Provides beautiful, formatted terminal output for the CLI interface,
+# including coloured risk severity badges and progress indicators.
+rich>=13.0.0
+
+# --- Utilities ---
+# pathlib is part of stdlib (Python 3.4+), no install needed.
+# dataclasses is part of stdlib (Python 3.7+), no install needed.
