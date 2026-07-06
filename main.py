@@ -1,40 +1,7 @@
 """
 main.py — LegalShield AI Entry Point
-======================================
 
-PURPOSE & DESIGN:
-    This is the main command-line entry point for LegalShield AI. It provides
-    a clean, user-friendly CLI interface for the multi-agent legal document
-    review pipeline.
-
-    USAGE:
-        python main.py --document path/to/contract.pdf
-        python main.py --document path/to/contract.docx --verbose
-        python main.py --document sample_contracts/sample_freelance_agreement.txt
-
-    ARCHITECTURE:
-        This file is intentionally thin — it handles ONLY:
-        1. CLI argument parsing
-        2. Environment setup (loading .env, configuring logging)
-        3. Calling the pipeline orchestrator
-        4. Presenting the result path to the user
-
-        All business logic lives in the agent modules and utilities.
-        This separation makes the pipeline easily testable and reusable
-        (you could call run_pipeline() from a web server, Jupyter notebook, etc.)
-
-    ERROR HANDLING:
-        All exceptions from the pipeline bubble up here and are caught in a
-        top-level handler that:
-        - Prints a user-friendly error message (not a raw traceback) by default
-        - Shows the full traceback in verbose mode for debugging
-        - Exits with a non-zero exit code so shell scripts can detect failures
-
-ENVIRONMENT VARIABLES (loaded from .env):
-    GEMINI_API_KEY    (required) — Your Google AI Studio API key
-    OUTPUT_DIR        (optional) — Where to save reports (default: ./output)
-    LOG_LEVEL         (optional) — Logging verbosity (default: INFO)
-    PII_STRICT_MODE   (optional) — Enable aggressive PII redaction (default: false)
+Provides a CLI interface for the legal document review pipeline.
 """
 
 import asyncio
@@ -147,7 +114,7 @@ def _build_argument_parser() -> argparse.ArgumentParser:
             "  python main.py --document agreement.docx --verbose\n"
             "  python main.py --document sample_contracts/sample_freelance_agreement.txt\n\n"
             "Supported file types: .pdf, .docx, .txt\n\n"
-            "IMPORTANT: Set GEMINI_API_KEY in your .env file before running.\n"
+            "IMPORTANT: Set your Gemini API keys in .env before running.\n"
             "           See .env.example for all configuration options."
         )
     )
@@ -197,37 +164,54 @@ def _check_prerequisites() -> None:
     Validates that all required configuration is present before starting.
     
     Checks:
-    1. GEMINI_API_KEY is set in environment.
-    2. The key is not the placeholder value from .env.example.
+    1. At least one API key exists for each pool (parser and analyst),
+       either via the dedicated multi-key variables or the legacy fallback.
+    2. No keys are still set to placeholder values.
     
     Raises:
         SystemExit: If a critical prerequisite is not met.
     """
     console = Console()
     
-    api_key = os.getenv("GEMINI_API_KEY")
+    # Check for multi-key configuration
+    parser_keys = [
+        os.getenv("GEMINI_KEY_PARSER_1", "").strip(),
+        os.getenv("GEMINI_KEY_PARSER_2", "").strip(),
+    ]
+    analyst_keys = [
+        os.getenv("GEMINI_KEY_ANALYST_1", "").strip(),
+        os.getenv("GEMINI_KEY_ANALYST_2", "").strip(),
+    ]
+    legacy_key = os.getenv("GEMINI_API_KEY", "").strip()
     
-    if not api_key:
+    # Filter out empty strings and placeholder values
+    placeholders = {"your_key_here", "your_gemini_api_key_here", ""}
+    parser_valid = [k for k in parser_keys if k not in placeholders]
+    analyst_valid = [k for k in analyst_keys if k not in placeholders]
+    legacy_valid = legacy_key not in placeholders
+    
+    # A pool is satisfied if it has dedicated keys OR the legacy fallback exists
+    parser_ok = bool(parser_valid) or legacy_valid
+    analyst_ok = bool(analyst_valid) or legacy_valid
+    
+    if not parser_ok or not analyst_ok:
+        missing_pools = []
+        if not parser_ok:
+            missing_pools.append("Parser (GEMINI_KEY_PARSER_1 / _2)")
+        if not analyst_ok:
+            missing_pools.append("Analyst (GEMINI_KEY_ANALYST_1 / _2)")
+        
         console.print(Panel(
-            "[bold red]❌ GEMINI_API_KEY not found![/bold red]\n\n"
-            "LegalShield AI requires a Google Gemini API key to function.\n\n"
+            "[bold red]❌ API keys not found![/bold red]\n\n"
+            "LegalShield AI requires at least one Gemini API key per agent pool.\n\n"
+            f"[bold]Missing pools:[/bold] {', '.join(missing_pools)}\n\n"
             "[bold]Setup steps:[/bold]\n"
             "1. Get your free API key at: [link]https://aistudio.google.com/app/api-keys[/link]\n"
             "2. Copy the .env.example file: [code]cp .env.example .env[/code]\n"
-            "3. Edit .env and paste your API key after GEMINI_API_KEY=",
+            "3. Edit .env and set your keys for each pool\n\n"
+            "[dim]Tip: You can also set GEMINI_API_KEY as a single fallback for all pools.[/dim]",
             title="Configuration Error",
             border_style="red"
-        ))
-        sys.exit(1)
-    
-    if api_key == "your_gemini_api_key_here":
-        console.print(Panel(
-            "[bold yellow]⚠️  Placeholder API key detected![/bold yellow]\n\n"
-            "Your .env file still contains the placeholder API key.\n"
-            "Please replace it with your actual Gemini API key from:\n"
-            "[link]https://aistudio.google.com/app/api-keys[/link]",
-            title="Configuration Warning",
-            border_style="yellow"
         ))
         sys.exit(1)
 
@@ -332,7 +316,22 @@ async def _async_main(args: argparse.Namespace) -> int:
         return 1
     
     except RuntimeError as e:
-        console.print(f"\n[bold red]❌ Pipeline error:[/bold red] {e}")
+        # Check if this is a KeyPoolExhaustedError (subclass of RuntimeError)
+        from agents.api_gateway import KeyPoolExhaustedError
+        if isinstance(e, KeyPoolExhaustedError):
+            console.print(Panel(
+                f"[bold red]❌ All API keys rate-limited![/bold red]\n\n"
+                f"The [bold]{e.role}[/bold] agent pool exhausted all {e.attempts} "
+                f"retry attempts due to rate limiting (HTTP 429).\n\n"
+                "[bold]What you can do:[/bold]\n"
+                "1. Wait a few minutes for rate limits to reset\n"
+                "2. Add more API keys to the pool in your .env file\n"
+                "3. Spread keys across different Google Cloud projects",
+                title="Rate Limit Exhaustion",
+                border_style="red"
+            ))
+        else:
+            console.print(f"\n[bold red]❌ Pipeline error:[/bold red] {e}")
         if args.verbose:
             traceback.print_exc()
         else:

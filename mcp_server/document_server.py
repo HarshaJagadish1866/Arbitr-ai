@@ -1,55 +1,7 @@
 """
 mcp_server/document_server.py — MCP Document Server
-=====================================================
 
-PURPOSE & DESIGN:
-    This module implements the Model Context Protocol (MCP) server for
-    LegalShield AI. It acts as a secure, local intermediary between the AI
-    agents and the file system / legal reference library.
-
-    The server is launched as a subprocess (stdio transport) by the Google
-    Antigravity SDK when an agent session starts. All communication happens
-    over standard input/output — no network ports are opened, maintaining
-    a strong security posture.
-
-WHY MCP?
-    The MCP architecture separates concerns clearly:
-    - Agents (AI reasoning) are responsible for THINKING about the content.
-    - The MCP server is responsible for FETCHING the content.
-    This means agents never need direct file system access, and file-reading
-    logic is centralised and reusable across all three agents.
-
-EXPOSED TOOLS (3 total):
-    1. read_document(file_path: str) -> str
-       - Reads a local PDF, DOCX, or TXT file and returns its text content.
-       - Validates file type and existence before reading.
-       - Used by the Parser Agent to ingest the user's uploaded document.
-
-    2. list_legal_references(category: str) -> str
-       - Returns the content of a legal reference document from the local
-         legal_library/ directory based on a category key.
-       - Categories: "indemnification", "ip_ownership", "liability", "termination"
-       - Used by the Risk Analyst Agent to compare clauses against standards.
-
-    3. get_clause_template(clause_type: str) -> str
-       - Retrieves a protective clause template from legal_library/templates/.
-       - Used by the Protector Agent as a starting point for drafting
-         safer alternative language.
-
-TRANSPORT:
-    This server uses the `stdio` transport — it is started via:
-        python mcp_server/document_server.py
-    The parent process (the agent runtime) communicates via stdin/stdout
-    using the MCP wire protocol. FastMCP handles all protocol details.
-
-RUNNING STANDALONE (for testing):
-    python mcp_server/document_server.py
-
-ERROR HANDLING:
-    - All tools wrap their logic in try/except and return descriptive error
-      strings (never raise exceptions) so agents can handle failures gracefully.
-    - Unsupported file types return an explicit error message.
-    - Missing files return a descriptive "not found" message.
+Provides document ingestion and reference search tools to the agent pipeline.
 """
 
 import os

@@ -1,62 +1,8 @@
 """
-agents/parser_agent.py — Agent 1: Document Parser
-===================================================
+agents/parser_agent.py — Document Parser Agent
 
-PURPOSE & DESIGN:
-    The Parser Agent is the FIRST specialist in the LegalShield AI pipeline.
-    Its sole responsibility is to receive the raw, PII-redacted text of a
-    legal document and transform it into a structured, machine-readable list
-    of clauses with metadata.
-
-    This separation of concerns is critical:
-    - The Parser Agent does NOT evaluate risk — it only identifies structure.
-    - The Risk Analyst Agent does NOT parse — it only evaluates what the Parser
-      has already extracted.
-    
-    This separation means each agent can be improved independently, and the
-    pipeline can be debugged at specific stages.
-
-AGENT BEHAVIOUR:
-    The Parser Agent is configured with:
-    - A detailed system instruction defining its legal document analysis role
-    - Access to the MCP server's `read_document` tool for file ingestion
-    - Instructions to output ONLY structured JSON (no prose) so downstream
-      agents can process it reliably
-
-WHAT IT EXTRACTS:
-    For each clause, the Parser outputs a JSON object with:
-    - clause_id:    Sequential identifier (e.g., "CLAUSE_01")
-    - title:        The clause heading or inferred label
-    - text:         The full verbatim text of the clause
-    - clause_type:  Inferred category (e.g., "indemnification", "termination",
-                    "ip_ownership", "payment", "non_compete", "arbitration",
-                    "limitation_of_liability", "confidentiality", "other")
-    - page_ref:     Page number where the clause appears (if detectable)
-    - flags:        Initial structural flags (e.g., "UNILATERAL", "PERPETUAL",
-                    "UNLIMITED_LIABILITY", "AUTOMATIC_RENEWAL")
-
-OUTPUT FORMAT (JSON):
-    {
-        "document_summary": "Brief description of the document type",
-        "total_clauses": 12,
-        "clauses": [
-            {
-                "clause_id": "CLAUSE_01",
-                "title": "Indemnification",
-                "text": "The Contractor shall indemnify...",
-                "clause_type": "indemnification",
-                "page_ref": 3,
-                "flags": ["UNILATERAL", "UNLIMITED_LIABILITY"]
-            },
-            ...
-        ]
-    }
-
-DESIGN NOTE — WHY STRUCTURED OUTPUT:
-    We instruct the Parser Agent to output ONLY JSON. This is a deliberate
-    design choice for a robust pipeline: downstream agents (Risk Analyst,
-    Protector) need deterministic input they can parse programmatically.
-    Prose output with embedded JSON would make the pipeline fragile.
+Extracts the structure of a legal document (clauses and metadata)
+and returns it as a formatted JSON object.
 """
 
 import logging
@@ -141,41 +87,13 @@ Do not add any explanation before or after the JSON.
 
 def build_parser_agent(mcp_server_config: types.McpStdioServer) -> LocalAgentConfig:
     """
-    Builds and returns the LocalAgentConfig for the Parser Agent.
-    
-    The Parser Agent is configured with:
-    - A highly specific system instruction (defined above) that constrains its
-      role to document parsing ONLY — no risk evaluation, no drafting.
-    - Access to the shared MCP server via the provided McpStdioServer config.
-      This gives the Parser Agent access to the `read_document` tool.
-    - Subagents are disabled (not needed for this agent).
-    
-    Design Note:
-        We return a LocalAgentConfig (not an Agent instance) so the orchestrator
-        can spin up the agent inside its own async context manager, managing
-        session lifecycle centrally.
-    
-    Args:
-        mcp_server_config: The shared McpStdioServer configuration that connects
-                           this agent to the LegalShield Document MCP server.
-    
-    Returns:
-        A configured LocalAgentConfig ready for use with Agent(config=...).
+    Builds the Agent configuration for the Parser Agent.
     """
     logger.info("Building Parser Agent configuration...")
     
     config = LocalAgentConfig(
-        # System instructions constrain this agent to its specialist role.
-        # Good system instructions are the single most important factor in
-        # multi-agent reliability — be specific and prohibit scope creep.
         system_instructions=PARSER_SYSTEM_INSTRUCTION,
-        
-        # Connect this agent to the shared MCP server for file reading.
-        # The McpStdioServer config tells the SDK to launch document_server.py
-        # as a subprocess and expose its tools to this agent.
         mcp_servers=[mcp_server_config],
-        
-        # Subagents are NOT needed for the Parser — its task is focused.
         capabilities=types.CapabilitiesConfig(
             enable_subagents=False,
         ),
@@ -190,26 +108,7 @@ async def run_parser_agent(
     mcp_server_config: types.McpStdioServer,
 ) -> str:
     """
-    Executes the Parser Agent to extract structured clauses from a document.
-    
-    This function is called by the Orchestrator. It:
-    1. Creates a fresh agent session using the parser configuration.
-    2. Sends the document path to the agent.
-    3. The agent calls the MCP `read_document` tool to fetch file content.
-    4. The agent analyses the content and returns structured JSON.
-    5. Returns the JSON string to the Orchestrator.
-    
-    Args:
-        document_path: The absolute path to the (already PII-redacted) document.
-        mcp_server_config: The MCP server connection configuration.
-    
-    Returns:
-        A JSON string containing the structured clause extraction results.
-        The Orchestrator will parse this and pass it to the Risk Analyst Agent.
-    
-    Raises:
-        Exception: If the agent session fails to start or the LLM call errors.
-                   The Orchestrator handles these gracefully.
+    Runs the Parser Agent to extract structured clauses.
     """
     config = build_parser_agent(mcp_server_config)
     

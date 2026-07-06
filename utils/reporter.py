@@ -1,31 +1,7 @@
 """
 utils/reporter.py — Report Generation Utility
-==============================================
 
-PURPOSE & DESIGN:
-    This module assembles the final LegalShield AI risk report from the outputs
-    of all three agents and the security layer audit log.
-
-    REPORT STRUCTURE:
-    ┌─────────────────────────────────────────────┐
-    │ Header: Title, timestamp, document metadata  │
-    │ Executive Summary: Risk scores, counts       │
-    │ PII Audit Log: What was redacted             │
-    │ Document Overview: Type, clause count        │
-    │ Protective Analysis: (from Protector Agent)  │
-    │ Footer: Disclaimer                           │
-    └─────────────────────────────────────────────┘
-
-    The report is saved as a Markdown file in the `output/` directory with a
-    timestamp in the filename for easy identification and archiving.
-
-    DESIGN CHOICE — MARKDOWN FORMAT:
-    Markdown was chosen over PDF or HTML for the output format because:
-    1. It is human-readable as plain text (no renderer needed).
-    2. It renders beautifully in GitHub, VS Code, Obsidian, and Notion.
-    3. It can be easily converted to PDF (e.g., via `pandoc`).
-    4. It is version-control friendly — diffs are readable.
-    5. It requires no additional dependencies to generate.
+Assembles the final legal review report in Markdown format.
 """
 
 import os

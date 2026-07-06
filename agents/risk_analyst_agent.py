@@ -1,74 +1,8 @@
 """
-agents/risk_analyst_agent.py — Agent 2: Legal Risk Analyst
-===========================================================
+agents/risk_analyst_agent.py — Legal Risk Analyst Agent
 
-PURPOSE & DESIGN:
-    The Risk Analyst Agent is the SECOND specialist in the LegalShield AI
-    pipeline. It receives the structured clause JSON produced by the Parser
-    Agent and evaluates each clause for legal risk from the perspective of
-    the PARTY SIGNING the contract (typically the weaker party — a freelancer,
-    small business owner, or employee).
-
-    This agent embodies the core legal intelligence of the system:
-    - It knows what standard, fair, and protective language looks like.
-    - It recognises patterns of unfair, one-sided, or exploitative clauses.
-    - It can call the MCP server to retrieve legal reference standards for
-      specific clause categories, grounding its analysis in documented criteria.
-
-RISK SCORING SYSTEM:
-    Each clause is assigned one of four severity levels:
-
-    🟢 LOW      — Standard boilerplate; no significant concerns. The clause is
-                  fair or weighted only slightly toward the other party.
-                  Action: Acknowledge and proceed.
-
-    🟡 MEDIUM   — Potentially unfavourable terms. May be acceptable depending
-                  on negotiation leverage, but warrants review.
-                  Action: Negotiate if possible.
-
-    🟠 HIGH     — Significant unfair advantage to the other party. Clause
-                  creates meaningful legal or financial exposure.
-                  Action: Strongly request modification before signing.
-
-    🔴 CRITICAL — Extremely dangerous clause. Creates unlimited liability,
-                  strips core rights (IP, pay), or enables predatory behaviour.
-                  Action: DO NOT SIGN without legal counsel and modification.
-
-AGENT BEHAVIOUR:
-    1. Receives the structured clause JSON from the Parser Agent.
-    2. For each clause, optionally calls `list_legal_references` to compare
-       the clause against documented standards.
-    3. Evaluates each clause along five dimensions:
-       a. Liability exposure — what the signer could be held responsible for
-       b. Rights retention   — does the signer keep their core rights?
-       c. Fairness & balance — is the obligation mutual or one-sided?
-       d. Ambiguity risk     — are undefined terms used that could be exploited?
-       e. Scope creep        — does the clause extend beyond its stated purpose?
-    4. Outputs annotated JSON with risk scores, reasoning, and key concerns.
-
-OUTPUT FORMAT (JSON):
-    {
-        "overall_risk_level": "HIGH",
-        "overall_risk_score": 7.2,
-        "risk_summary": "Brief paragraph summarising the overall risk profile",
-        "clause_analysis": [
-            {
-                "clause_id": "CLAUSE_01",
-                "title": "Indemnification",
-                "risk_level": "CRITICAL",
-                "risk_score": 9.5,
-                "risk_reasons": ["Unilateral obligation", "No liability cap", ...],
-                "key_concerns": "Plain English description of what could go wrong",
-                "dimensions": {
-                    "liability_exposure": "CRITICAL",
-                    "rights_retention": "LOW",
-                    "fairness_balance": "HIGH",
-                    "ambiguity_risk": "MEDIUM",
-                    "scope_creep": "LOW"
-                }
-            }
-        ]
-    }
+Analyzes parsed clauses, scoring risk levels and detailing concerns
+based on configured legal standards. Outputs formatted JSON.
 """
 
 import logging
@@ -165,24 +99,7 @@ IMPORTANT: Output ONLY the JSON. No markdown code blocks. No prose before or aft
 
 def build_risk_analyst_agent(mcp_server_config: types.McpStdioServer) -> LocalAgentConfig:
     """
-    Builds and returns the LocalAgentConfig for the Risk Analyst Agent.
-    
-    The Risk Analyst Agent has access to the MCP server's `list_legal_references`
-    tool, allowing it to compare clauses against documented legal standards.
-    
-    Design Note on Tool Access:
-        The Risk Analyst Agent intentionally has access to ALL MCP tools
-        (read_document, list_legal_references, get_clause_template), but its
-        system instruction only directs it to use `list_legal_references`.
-        This is simpler than configuring fine-grained tool permissions for
-        each agent individually. In production, you would use MCP permissions
-        to enforce this separation strictly.
-    
-    Args:
-        mcp_server_config: The shared McpStdioServer connection configuration.
-    
-    Returns:
-        A configured LocalAgentConfig for the Risk Analyst Agent.
+    Builds the Agent configuration for the Risk Analyst Agent.
     """
     logger.info("Building Risk Analyst Agent configuration...")
     
@@ -203,26 +120,7 @@ async def run_risk_analyst_agent(
     mcp_server_config: types.McpStdioServer,
 ) -> str:
     """
-    Executes the Risk Analyst Agent to evaluate legal risk for each clause.
-    
-    This function is called by the Orchestrator after the Parser Agent has
-    completed its work. It:
-    1. Creates a fresh agent session with the risk analyst configuration.
-    2. Sends the structured clause JSON from the Parser Agent.
-    3. The agent evaluates each clause (optionally calling `list_legal_references`).
-    4. Returns a risk-annotated JSON string.
-    
-    Args:
-        parsed_clauses_json: The JSON string output from the Parser Agent,
-                             containing all extracted clauses.
-        mcp_server_config: The MCP server connection configuration.
-    
-    Returns:
-        A JSON string containing the risk analysis for every clause.
-        The Orchestrator will pass this to the Protector Agent.
-    
-    Raises:
-        Exception: Propagated to the Orchestrator for graceful handling.
+    Runs the Risk Analyst Agent to evaluate legal risk for each clause.
     """
     config = build_risk_analyst_agent(mcp_server_config)
     
