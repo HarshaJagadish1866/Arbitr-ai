@@ -1,28 +1,7 @@
 """
 utils/file_handler.py — File Type Validation and Handling
-==========================================================
 
-PURPOSE & DESIGN:
-    This utility module provides safe, validated file access for LegalShield AI.
-    It is the gatekeeper that ensures only supported, valid document files
-    enter the pipeline.
-
-    SUPPORTED FILE TYPES:
-    - .pdf  — Adobe Portable Document Format (most common for contracts)
-    - .docx — Microsoft Word Open XML (common for editable agreements)
-    - .txt  — Plain text (for simple contracts or extracted text)
-
-    UNSUPPORTED (with helpful error messages):
-    - .doc  — Legacy Word format (requires different library — suggest converting)
-    - .odt  — OpenDocument Text (suggest converting to .docx)
-    - Images (.jpg, .png, .tiff) — Scanned documents; suggest OCR pre-processing
-    - .pdf with only images — Detected and warned; text extraction will be empty
-
-ERROR HANDLING PHILOSOPHY:
-    This module raises specific, descriptive exceptions rather than returning
-    error codes. This follows the "fail fast" principle: if a file is invalid,
-    we want to know immediately (before any expensive API calls) with a clear
-    explanation of exactly what went wrong and how to fix it.
+Provides validation checks for document files processed by the pipeline.
 """
 
 import logging

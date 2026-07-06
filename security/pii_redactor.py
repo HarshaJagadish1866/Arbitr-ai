@@ -1,54 +1,8 @@
 """
-security/pii_redactor.py — PII Redaction Security Layer
-========================================================
+security/pii_redactor.py — PII Redactor
 
-PURPOSE & DESIGN:
-    This module implements the pre-processing security layer for LegalShield AI.
-    It MUST be the first component that processes any document text, ensuring
-    that no Personally Identifiable Information (PII) ever reaches the AI models.
-
-    This is a critical privacy-by-design principle: we cannot guarantee that
-    external LLM APIs store or log zero data, so we eliminate PII at the source
-    before any API call is made.
-
-WHAT IS REDACTED:
-    1. Full names          — via spaCy Named Entity Recognition (PERSON entities)
-    2. Email addresses     — via regex pattern matching
-    3. Phone numbers       — via regex (US and international formats)
-    4. Physical addresses  — via spaCy (GPE, LOC entities) + street regex
-    5. Social Security Numbers (SSN) — via regex (XXX-XX-XXXX format)
-    6. Bank account & routing numbers — via regex (8-17 digit sequences)
-    7. Credit card numbers — via regex + Luhn algorithm verification
-    8. IP addresses        — via regex
-
-HOW IT WORKS:
-    1. Load the spaCy English model (en_core_web_sm) for NER-based detection.
-    2. Run spaCy NER on the full text to find PERSON, GPE, and LOC entities.
-    3. Apply regex patterns to find structured PII (emails, phones, SSNs, etc.)
-    4. Replace all detected PII with descriptive placeholder tokens
-       e.g., "[REDACTED_NAME]", "[REDACTED_EMAIL]", "[REDACTED_PHONE]"
-    5. Log every redaction to an audit record with type, position, and timestamp.
-    6. Return the clean text and the audit log.
-
-DESIGN CHOICES:
-    - We favour false positives over false negatives: it is safer to redact a
-      benign word than to leak real PII to an external API.
-    - spaCy NER is used for context-aware name detection (regex alone is too
-      imprecise for names — almost any word could be a name).
-    - The Luhn algorithm is used to validate credit card numbers, reducing
-      false positives from 16-digit number sequences.
-    - All patterns are pre-compiled at module load time for performance.
-
-AUDIT LOG FORMAT:
-    Each redaction is stored as a dict:
-    {
-        "type": "EMAIL",
-        "original_value": "john@example.com",
-        "replacement": "[REDACTED_EMAIL]",
-        "start": 142,
-        "end": 158,
-        "timestamp": "2025-07-06T17:45:12"
-    }
+Identifies and redacts Personally Identifiable Information (PII) 
+from text before it is processed by external API models.
 """
 
 import re
