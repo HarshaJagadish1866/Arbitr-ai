@@ -154,7 +154,7 @@ names, emails, phone numbers, addresses, SSNs, bank details, credit cards.
 ## 📁 Project Structure
 
 ```
-legalshield-ai/
+Arbitr-ai/
 │
 ├── README.md
 ├── .env.example
@@ -215,7 +215,7 @@ legalshield-ai/
 
 ```bash
 git clone <your-repo-url>
-cd legalshield-ai
+cd Arbitr-ai
 ```
 
 ### Step 2: Create a Virtual Environment
