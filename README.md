@@ -283,5 +283,3 @@ The system writes a structured Markdown report to `output/report_<timestamp>.md`
 | `File type not supported` | Only PDF, DOCX, and TXT files are supported |
 
 ---
-
-*Built with ❤️ using the Google Antigravity SDK, FastMCP, and spaCy.*
