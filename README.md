@@ -28,7 +28,7 @@ Every year, thousands of businesses and individuals sign contracts they don't
 fully understand. Legal agreements are deliberately complex — filled with
 industry jargon, buried liability clauses, and loopholes that favour the
 drafting party. Hiring a contract attorney for a routine document review costs
-$300–$800/hour and is out of reach for most small businesses and freelancers.
+$500–$800/hour and is out of reach for most small businesses and freelancers.
 
 The consequences are severe:
 - **Unfair termination clauses** that allow one-sided cancellation without cause
