@@ -1,10 +1,3 @@
-# ==============================================================================
-# README.md - LegalShield AI
-#
-# Production-ready documentation for the LegalShield AI system.
-# This document covers the problem statement, architecture, course concept
-# implementations, setup instructions, and usage guide.
-# ==============================================================================
 
 # ⚖️ LegalShield AI — Intelligent Legal Document Reviewer
 
