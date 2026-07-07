@@ -1,5 +1,5 @@
 
-# ⚖️ LegalShield AI — Intelligent Legal Document Reviewer
+# ⚖️ Arbitr-ai — Intelligent Legal Document Reviewer
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/downloads/)
 [![Google Antigravity SDK](https://img.shields.io/badge/ADK-Google%20Antigravity-orange.svg)](https://aistudio.google.com/)
@@ -41,7 +41,7 @@ The consequences are severe:
 
 ## ✅ Solution Overview
 
-**LegalShield AI** is a multi-agent AI system that acts as a tireless, expert
+**Arbitr-ai** is a multi-agent AI system that acts as a tireless, expert
 contract analyst available 24/7. It automatically:
 
 1. **Parses** uploaded PDF, DOCX, or TXT contracts into structured, clause-by-clause units
